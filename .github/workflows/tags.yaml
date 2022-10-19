@@ -31,7 +31,7 @@ jobs:
       - name: login and publish chart to ghcr.io
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ghcr.io/tinkerbell --username ${{ github.actor }} --password-stdin
-          helm push stack-${${{ github.ref }}:1}.tgz oci://ghcr.io/tinkerbell/charts
+          ver=${GITHUB_REF_NAME}; helm push stack-${ver:1}.tgz oci://ghcr.io/tinkerbell/charts
 
       - name: Create Release
         id: create_release
