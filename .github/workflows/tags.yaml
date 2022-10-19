@@ -25,14 +25,13 @@ jobs:
         with:
           version: v3.9.4
 
-      - name: login to ghcr.io
-        run: echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ghcr.io/jacobweinstock --username ${{ github.actor }} --password-stdin
-      
       - name: create helm chart package
         run: ver=${GITHUB_REF_NAME}; helm package tinkerbell/stack --dependency-update --version ${ver:1}
       
-      - name: publish chart to ghcr.io
-        run: ver=${GITHUB_REF_NAME}; helm push stack-${ver:1}.tgz oci://ghcr.io/jacobweinstock/charts
+      - name: login and publish chart to ghcr.io
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ghcr.io/tinkerbell --username ${{ github.actor }} --password-stdin
+          helm push stack-${${{ github.ref }}:1}.tgz oci://ghcr.io/tinkerbell/charts
 
       - name: Create Release
         id: create_release
